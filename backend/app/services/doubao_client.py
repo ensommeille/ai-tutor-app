@@ -2,44 +2,22 @@
 import httpx
 import os
 from dotenv import load_dotenv
+import json
+from volcenginesdkarkruntime import Ark
 
 load_dotenv()
 
 async def query_doubao(prompt: str) -> str:
-    """调用豆包API获取响应"""
+    
     api_key = os.getenv("DOUBAO_API_KEY")
-    endpoint = os.getenv("DOUBAO_ENDPOINT")
-    
-    if not api_key or not endpoint:
-        return "错误：请配置豆包API密钥和端点"
-    
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    # 豆包API的请求体格式（与OpenAI兼容）
-    payload = {
-        "model": "ernie-bot-turbo",  # 豆包免费模型，可根据实际支持的模型替换
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7
-    }
-    
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                endpoint,
-                json=payload,
-                headers=headers,
-                timeout=30  # 超时设置
-            )
-            response.raise_for_status()  # 抛出HTTP错误
-            result = response.json()
-            return result["choices"][0]["message"]["content"]
-    
-    except httpx.HTTPStatusError as e:
-        return f"API请求失败（状态码：{e.response.status_code}）：{await e.response.text()}"
-    except KeyError as e:
-        return f"API响应格式错误：缺少字段 {str(e)}"
-    except Exception as e:
-        return f"请求处理错误：{str(e)}"
+    client = Ark(api_key=api_key)
+
+
+    completion = client.chat.completions.create(
+        # 替换为模型 ID，比如"doubao-1.5-pro-32k-250115"
+        model="doubao-seed-1-6-250615",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return completion.choices[0].message.content

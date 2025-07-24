@@ -4,10 +4,10 @@
 2. 安装项目依赖：
    - 进入 `backend` 目录。
    - 执行 `pip install -r requirements.txt` 安装依赖。
+   - 本版本使用豆包api 需要 'pip install -U --no-cache-dir --verbose volcengine-python-sdk[ark]' 安装依赖
 3. 配置环境变量：
    - 进入 `.env` 文件。
-   - 添加 `DEEPSEEK_API_KEY` 变量，值为你的 Deepseek API 密钥。
-   - 添加 `DEEPSEEK_ENDPOINT` 变量，值为 Deepseek API 端点 URL。
+   - 添加 `DOUBAO_API_KEY` 变量，值为你的豆包 API 密钥。
 4. 启动后端服务：
    ```
    uvicorn app.main:app --reload --host 0.0.0.0--port 8000
