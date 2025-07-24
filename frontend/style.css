@@ -1,0 +1,17 @@
+body {
+  font-family: sans-serif;
+  margin: 2em;
+}
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+button {
+  margin: 0.5em;
+}
+#output-box {
+  white-space: pre-wrap;
+  background: #f0f0f0;
+  padding: 1em;
+  border: 1px solid #ccc;
+}
