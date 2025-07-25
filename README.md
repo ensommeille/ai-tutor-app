@@ -10,7 +10,7 @@
    - 添加 `DOUBAO_API_KEY` 变量，值为你的豆包 API 密钥。
 4. 启动后端服务：
    ```
-   uvicorn app.main:app --reload --host 0.0.0.0--port 8000
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 ## 后续启动
 - 直接运行 `uvicorn app.main:app --reload` 即可启动后端服务。
