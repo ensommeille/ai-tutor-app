@@ -7,29 +7,17 @@ from volcenginesdkarkruntime import Ark
 
 load_dotenv()
 
-async def query_doubao(prompt: str, image: str = None) -> str:
+async def query_doubao(prompt: str) -> str:
     
     api_key = os.getenv("DOUBAO_API_KEY")
     client = Ark(api_key=api_key)
 
-    # 构建消息内容
-    message_content = [{
-        "type": "text",
-        "text": prompt
-    }]
-    
-    # 如果有图片，添加图片内容
-    if image:
-        message_content.append({
-            "type": "image",
-            "image": image
-        })
 
     completion = client.chat.completions.create(
-        # 使用支持多模态的模型
-        model="doubao-multimodal-1-6b",
+        # 替换为模型 ID
+        model="doubao-seed-1-6-250615",
         messages=[
-            {"role": "user", "content": message_content}
+            {"role": "user", "content": prompt}
         ]
     )
     return completion.choices[0].message.content
