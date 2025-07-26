@@ -1,18 +1,22 @@
 
-from openai import OpenAI
+from openai import AsyncOpenAI
 from app.config import settings
 
-async def query_deepseek(prompt: str) -> str:
-    client = OpenAI(
+async def query_deepseek(prompt: str):
+    client = AsyncOpenAI(
         api_key=settings.DEEPSEEK_API_KEY,
         base_url="https://api.operatornext.cn/v1"
     )
-    response = client.chat.completions.create(
+    stream = await client.chat.completions.create(
         model="deepseek-chat",
         messages=[
             {"role": "system", "content": "You are a helpful assistant"},
             {"role": "user", "content": prompt}
         ],
-        stream=False
+        temperature=0.0,
+        stream=True
     )
-    return response.choices[0].message.content
+    async for chunk in stream:
+        if chunk.choices and len(chunk.choices) > 0 and chunk.choices[0].delta and chunk.choices[0].delta.content:
+            content = chunk.choices[0].delta.content
+            yield content

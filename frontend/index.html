@@ -22,9 +22,10 @@
     </div>
 
     <div id="upload-section" style="display:none;">
-      <input type="file" id="upload-file" />
-      <button id="submit-btn">提交</button>
-    </div>
+  <input type="file" id="upload-file" />
+  <div id="image-preview-container" style="margin: 15px 0;"></div>
+  <button id="submit-btn">提交</button>
+</div>
 
     <div id="results-container" style="display:none;">
       <div class="results-header">
@@ -32,7 +33,6 @@
         <button id="new-query-btn">新查询</button>
       </div>
       <div class="results-content">
-        <div id="result-image-container"></div>
         <div id="result-text"></div>
       </div>
       <div class="results-footer">
@@ -40,7 +40,7 @@
       </div>
     </div>
   </div>
-
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -52,6 +52,7 @@ document.body.appendChild(fileInput);
 
 // 图片选择处理
 function chooseImage() {
+  fileInput.value = '';
   fileInput.click();
 }
 
@@ -61,6 +62,24 @@ fileInput.onchange = function(e) {
     selectedImage = e.target.files[0];
     console.log('图片选择成功:', selectedImage.name, '大小:', selectedImage.size);
     showMessage(`图片选择成功: ${selectedImage.name}`);
+    // 显示图片预览
+    const previewContainer = document.getElementById('image-preview-container');
+    previewContainer.innerHTML = ''; // 清空现有预览
+    
+    const imgPreview = document.createElement('img');
+    imgPreview.style.maxWidth = '300px';
+    imgPreview.style.maxHeight = '200px';
+    imgPreview.style.border = '1px solid #ddd';
+    imgPreview.style.borderRadius = '4px';
+    imgPreview.style.padding = '5px';
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imgPreview.src = e.target.result;
+    };
+    reader.readAsDataURL(selectedImage);
+    previewContainer.appendChild(imgPreview);
+    
     // 显示已选图片名称
     const fileNameEl = document.createElement('div');
     fileNameEl.id = 'selected-file-name';
@@ -94,8 +113,8 @@ function showMessage(text) {
   messageEl.style.zIndex = '1000';
   document.body.appendChild(messageEl);
   
-  // 3秒后移除提示
-  setTimeout(() => messageEl.remove(), 3000);
+  // 1秒后移除提示
+  setTimeout(() => messageEl.remove(), 1000);
 }
 
 // 提交按钮点击事件 - 调用后端API
@@ -145,7 +164,7 @@ document.getElementById('submit-btn').onclick = async () => {
     
     // 添加请求超时
 const controller = new AbortController();
-const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒超时
+const timeoutId = setTimeout(() => controller.abort(), 30000); // 30秒超时
 
 const res = await fetch("http://localhost:8000/api/tutor/solve", {
   method: "POST",
@@ -154,33 +173,41 @@ const res = await fetch("http://localhost:8000/api/tutor/solve", {
 });
 
 clearTimeout(timeoutId);
-    console.log('后端响应状态:', res.status);
-    if (!res.ok) {
-        throw new Error(`上传失败: HTTP状态码 ${res.status}`);
-      }
-      const data = await res.json();
-      if (!data.answer) {
-        throw new Error('上传成功但未收到答案数据');
-      }
-      // 显示结果容器
-      uploadSection.style.display = 'none';
-      resultsContainer.style.display = 'block';
-      
-      // 显示结果文本
-      resultText.innerHTML = data.answer;
-      
-      // 如果有图片结果，显示图片
-      if (data.image_url) {
-        const img = document.createElement('img');
-        img.src = data.image_url;
-        img.alt = '解题示意图';
-        resultImageContainer.appendChild(img);
-      } else {
-        resultImageContainer.innerHTML = '<p>无相关图片</p>';
-      }
-      
-      // 设置元数据
-      resultMeta.textContent = `处理时间: ${new Date().toLocaleString()}`;
+console.log('后端响应状态:', res.status);
+
+if (!res.ok) {
+  throw new Error(`上传失败: HTTP状态码 ${res.status}`);
+}
+
+// 显示结果容器
+uploadSection.style.display = 'none';
+resultsContainer.style.display = 'block';
+resultText.innerHTML = ''; // 清空现有内容
+
+
+
+// 处理流式响应
+loadingEl.style.display = 'none';
+  const reader = res.body.getReader();
+const decoder = new TextDecoder();
+let fullAnswer = '';
+
+resultMeta.textContent = `处理中... ${new Date().toLocaleString()}`;
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  
+  const chunk = decoder.decode(value, { stream: true });
+    fullAnswer += chunk;
+    // 使用marked.js渲染完整Markdown内容
+    resultText.innerHTML = marked.parse(fullAnswer);
+    // 自动滚动到底部
+    resultText.scrollTop = resultText.scrollHeight;
+}
+
+// 处理完成
+resultMeta.textContent = `处理完成: ${new Date().toLocaleString()}`;
   } catch (e) {
       console.error('上传过程错误:', e);
       // 显示错误信息在结果界面
