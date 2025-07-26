@@ -1,8 +1,8 @@
 fastapi
 uvicorn
-httpx
-pytesseract
-pillow
-python-dotenv
-pydantic-settings
+requests
 python-multipart
+python-dotenv
+httpx
+pillow
+pydantic-settings

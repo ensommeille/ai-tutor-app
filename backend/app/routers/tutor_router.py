@@ -5,7 +5,7 @@ from app.services.ocr_service import run_ocr
 from app.services.prompt_service import build_prompt
 from app.services.doubao_client import query_doubao
 from app.services.deepseek_client import query_deepseek
-from app.schemas.response import TutorResponse
+
 
 router = APIRouter()
 
