@@ -16,6 +16,7 @@ async def solve_from_image(
     role: str = Form(...),
 ):
     text = await run_ocr(image)
+    print(text)
     prompt = build_prompt(mode=mode, role=role, content=text)
     async def stream_generator():
         async for chunk in query_deepseek(prompt):
