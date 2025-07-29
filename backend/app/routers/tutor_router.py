@@ -18,6 +18,7 @@ async def solve_from_image(
     text = await run_ocr(image)
     print(text)
     prompt = build_prompt(mode=mode, role=role, content=text)
+    print(prompt)
     async def stream_generator():
         async for chunk in query_deepseek(prompt):
             yield chunk.encode("utf-8")

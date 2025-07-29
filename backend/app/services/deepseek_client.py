@@ -10,7 +10,6 @@ async def query_deepseek(prompt: str):
     stream = await client.chat.completions.create(
         model="deepseek-chat",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant"},
             {"role": "user", "content": prompt}
         ],
         temperature=0.0,

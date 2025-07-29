@@ -123,8 +123,6 @@ async def run_ocr(file: UploadFile) -> str:
     
     # 解析响应结果
     result = json.loads(response.text)
-    # 打印完整响应用于调试
-    print("OCR API响应: ", result)
     # 处理API错误码
     error_codes = {
         10000: "参数错误",
