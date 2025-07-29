@@ -12,35 +12,41 @@ const outputBox = document.getElementById('output-box'); // 保留用于兼容�
 // 选择身份
 let selectedIdentity = '';
 
-document.getElementById('student-btn').onclick = () => {
-  selectedIdentity = 'student';
-  identitySelection.style.display = 'none';
-  functionSelection.style.display = 'block';
-};
+// 角色按钮元素
+const identityButtons = [
+  document.getElementById('student-btn'),
+  document.getElementById('teacher-btn'),
+  document.getElementById('parent-btn')
+];
 
-document.getElementById('teacher-btn').onclick = () => {
-  selectedIdentity = 'teacher';
-  identitySelection.style.display = 'none';
-  functionSelection.style.display = 'block';
-};
-
-document.getElementById('parent-btn').onclick = () => {
-  selectedIdentity = 'parent';
-  identitySelection.style.display = 'none';
-  functionSelection.style.display = 'block';
-};
+// 为每个角色按钮添加点击事件
+identityButtons.forEach(btn => {
+  btn.onclick = () => {
+    // 移除所有按钮的active类
+    identityButtons.forEach(b => b.classList.remove('active'));
+    // 为当前点击按钮添加active类
+    btn.classList.add('active');
+    selectedIdentity = btn.id.replace('-btn', '');
+  };
+});
 
 // 选择功能
-document.getElementById('upload-wrong-btn').onclick = () => {
-  handleUpload('wrong');
-  functionSelection.style.display = 'none'; // 隐藏功能按钮
-};
+// 功能按钮元素
+const functionButtons = [
+  document.getElementById('upload-wrong-btn'),
+  document.getElementById('upload-difficult-btn')
+];
 
-document.getElementById('upload-difficult-btn').onclick = () => {
-  handleUpload('difficult');
-  functionSelection.style.display = 'none'; // 隐藏功能按钮
-};
-
+// 为每个功能按钮添加点击事件
+functionButtons.forEach(btn => {
+  btn.onclick = () => {
+    // 移除所有按钮的active类
+    functionButtons.forEach(b => b.classList.remove('active'));
+    // 为当前点击按钮添加active类
+    btn.classList.add('active');
+    handleUpload(btn.id.includes('wrong') ? 'wrong' : 'difficult');
+  };
+});
 
 // 上传文件后
 // 添加文件选择input元素
@@ -179,8 +185,7 @@ if (!res.ok) {
   throw new Error(`上传失败: HTTP状态码 ${res.status}`);
 }
 
-// 显示结果容器
-uploadSection.style.display = 'none';
+// 显示结果容器  
 resultsContainer.style.display = 'block';
 resultText.innerHTML = ''; // 清空现有内容
 
@@ -242,5 +247,5 @@ newQueryBtn.onclick = function() {
 function handleUpload(type) {
   uploadType = type;
   uploadSection.style.display = 'block';
-  chooseImage(); // 自动触发图片选择
+  // chooseImage(); // 自动触发图片选择
 }
